@@ -1,0 +1,75 @@
+{
+  "users": [
+    {
+      "id": "user1",
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john.doe@example.com",
+      "phone": "+1234567890",
+      "role": "pilot",
+      "licenseId": "LIC123456",
+      "aadharNo": "1234-5678-9012",
+      "panNo": "ABCDE1234F",
+      "location": "New York",
+      "active": true,
+      "completedFlights": 15,
+      "createdAt": "2023-01-01T10:00:00Z",
+      "updatedAt": "2023-05-01T12:00:00Z"
+    },
+    {
+      "id": "user2",
+      "firstName": "Alice",
+      "lastName": "Smith",
+      "email": "alice.smith@example.com",
+      "phone": "+1987654321",
+      "role": "customer",
+      "licenseId": "",
+      "aadharNo": "9876-5432-1098",
+      "panNo": "XYZAB9876K",
+      "location": "San Francisco",
+      "active": true,
+      "completedFlights": 0,
+      "createdAt": "2023-02-15T09:30:00Z",
+      "updatedAt": "2023-05-01T12:00:00Z"
+    }
+  ],
+  "drones": [
+    {
+      "id": "drone1",
+      "name": "DJI Phantom",
+      "location": "New York",
+      "type": "Quadcopter",
+      "purpose": "Delivery",
+      "imageUrl": "https://example.com/images/dji_phantom.jpg",
+      "status": "available",
+      "createdAt": "2023-01-10T08:00:00Z",
+      "updatedAt": "2023-05-01T12:00:00Z"
+    }
+  ],
+  "services": [
+    {
+      "id": "service1",
+      "name": "Package Delivery",
+      "description": "Fast and reliable package delivery service.",
+      "price": 25.0,
+      "duration": 30,
+      "createdAt": "2023-01-05T11:00:00Z",
+      "updatedAt": "2023-05-01T12:00:00Z"
+    }
+  ],
+  "requests": [
+    {
+      "id": "request1",
+      "customer": "user2",
+      "service": "service1",
+      "status": "pending",
+      "requestedAt": "2023-05-01T10:00:00Z",
+      "completedAt": null,
+      "assignedPilot": "user1",
+      "assignedDrone": "drone1",
+      "location": "San Francisco",
+      "createdAt": "2023-05-01T10:00:00Z",
+      "updatedAt": "2023-05-01T10:00:00Z"
+    }
+  ]
+}

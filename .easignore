@@ -1,0 +1,20 @@
+# Ignore node_modules and other large folders
+node_modules
+.git
+.gitignore
+.easignore
+.expo
+.expo-shared
+.vscode
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.DS_Store
+*.iml
+*.idea
+android/build
+android/app/build
+ios/build
+ios/Pods

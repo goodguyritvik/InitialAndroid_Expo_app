@@ -1,0 +1,142 @@
+// title
+title Drone Service Platform Data Model
+
+// define tables
+users [icon: user, color: yellow]{
+  id string pk
+  firstName string
+  lastName string
+  email string
+  phone string
+  role string
+  licenseId string
+  aadharNo string
+  panNo string
+  location string
+  active boolean
+  completedFlights int
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+coupons [icon: tag, color: green]{
+  id string pk
+  code string
+  message string
+  validFrom timestamp
+  validTo timestamp
+  isPublic boolean
+  discountType string
+  maxRedemptionCount int
+  maxDiscountPercent float
+  maxDiscountAmount float
+  minOrderValue float
+  maxUsagePerUser int
+  locationSpecific boolean
+  createdBy string
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+drones [icon: airplay, color: blue]{
+  id string pk
+  name string
+  location string
+  type string
+  purpose string
+  imageUrl string
+  status string
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+invoices [icon: file-text, color: orange]{
+  id string pk
+  invoiceNumber string
+  customer string
+  amount float
+  date timestamp
+  status string
+  details string
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+services [icon: briefcase, color: purple]{
+  id string pk
+  name string
+  description string
+  price float
+  duration int
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+teams [icon: users, color: pink]{
+  id string pk
+  name string
+  members string[] // array of user references
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+locations [icon: map-pin, color: lightblue]{
+  id string pk
+  name string
+  address string
+  geoPoint string
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+requests [icon: send, color: red]{
+  id string pk
+  customer string
+  service string
+  status string
+  requestedAt timestamp
+  completedAt timestamp
+  assignedPilot string
+  assignedDrone string
+  location string
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+revenue [icon: dollar-sign, color: teal]{
+  id string pk
+  amount float
+  date timestamp
+  source string
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+profiles [icon: user-check, color: gray]{
+  id string pk
+  user string
+  bio string
+  avatarUrl string
+  socialLinks string
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+wallets [icon: credit-card, color: brown]{
+  id string pk
+  user string
+  balance float
+  transactions object[] // array of {amount, type, date}
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+// define relationships
+coupons.createdBy > users.id
+invoices.customer > users.id
+requests.customer > users.id
+requests.service > services.id
+requests.assignedPilot > users.id
+requests.assignedDrone > drones.id
+requests.location > locations.id
+teams.members <> users.id

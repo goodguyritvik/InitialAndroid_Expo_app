@@ -1,0 +1,18 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "com.facebook.react") {
+                useModule("com.facebook.react:react-native-gradle-plugin:0.80.0")
+            }
+        }
+    }
+}
+
+rootProject.name = 'BESDSP'
+
+include ':app'

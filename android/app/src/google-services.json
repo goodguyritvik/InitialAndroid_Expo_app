@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "799901107375",
+    "project_id": "bes-dsp-app",
+    "storage_bucket": "bes-dsp-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799901107375:android:caea5ffa28e4bb8d02c05a",
+        "android_client_info": {
+          "package_name": "com.besdsp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzq83ibNdySvxoSd2xIBp6gvEpdkwxpiY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

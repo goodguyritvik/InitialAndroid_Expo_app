@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "BES-DSP",
+    "slug": "BES-DSP",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "scheme": "besapppilotapp",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#0047AB"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.BESDSP"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0047AB"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "abf72056-f3f2-4cec-b6da-09e3ca9fd108"
+      }
+    },
+    "owner": "ritvik_14"
+  }
+}
