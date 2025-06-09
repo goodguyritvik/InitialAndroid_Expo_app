@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { auth, app } from '../../../firebaseConfig';
-import { useRouter } from 'expo-router';
+import { View, TextInput, Button, Text, StyleSheet, Alert, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import { auth, app } from '@/firebaseConfig';
+import { useNavigation } from '@react-navigation/native';
 import firebase from 'firebase/compat/app';
 
 const RECAPTCHA_SITE_KEY = '6LeuAFQrAAAAAIAbtR1Y48ysK-GwZsssYDxHn-Fl';
@@ -10,20 +10,19 @@ export default function PhoneAuth() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [confirmationResult, setConfirmationResult] = useState<any>(null);
   const [verificationCode, setVerificationCode] = useState('');
-  const router = useRouter();
+  const navigation = useNavigation();
+
+  const [recaptchaReady, setRecaptchaReady] = React.useState(false);
 
   useEffect(() => {
-    if (Platform.OS === 'web') {
-      // Setup reCAPTCHA verifier for web with site key
+    if (Platform.OS === 'web' && recaptchaReady) {
       (window as any).recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
         size: 'invisible',
         siteKey: RECAPTCHA_SITE_KEY,
         callback: (response: any) => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
           console.log('reCAPTCHA solved');
         },
         'expired-callback': () => {
-          // Response expired. Ask user to solve reCAPTCHA again.
           Alert.alert('reCAPTCHA expired, please try again.');
         }
       });
@@ -31,8 +30,13 @@ export default function PhoneAuth() {
         (window as any).recaptchaWidgetId = widgetId;
       });
     }
-  }, []);
+  }, [recaptchaReady]);
 
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      setRecaptchaReady(true);
+    }
+  }, []);
 
   const sendVerification = async () => {
     if (!phoneNumber) {
@@ -40,29 +44,27 @@ export default function PhoneAuth() {
       return;
     }
     try {
-      console.log('Sending verification code to:', phoneNumber);
-      const e164PhoneNumber = phoneNumber.startsWith('+') ? phoneNumber : '+' + phoneNumber.replace(/\D/g, '');
-      console.log('Formatted phone number:', e164PhoneNumber);
-
+      let e164PhoneNumber = phoneNumber.startsWith('+') ? phoneNumber : '+' + phoneNumber.replace(/\D/g, '');
+      if (!phoneNumber.startsWith('+')) {
+        e164PhoneNumber = '+91' + phoneNumber.replace(/\D/g, '');
+      }
       if (Platform.OS === 'web') {
         const appVerifier = (window as any).recaptchaVerifier;
         const result = await auth.signInWithPhoneNumber(e164PhoneNumber, appVerifier);
         setConfirmationResult(result);
         Alert.alert('Verification code sent to ' + e164PhoneNumber);
-        console.log('Confirmation result set:', result);
       } else {
         const result = await auth.signInWithPhoneNumber(e164PhoneNumber);
         setConfirmationResult(result);
         Alert.alert('Verification code sent to ' + e164PhoneNumber);
-        console.log('Confirmation result set:', result);
       }
     } catch (err: any) {
-      console.error('Error sending verification code:', err);
       Alert.alert('Error', err.message);
     }
   };
 
   const confirmCode = async () => {
+    console.log('confirmCode called');
     if (!verificationCode) {
       Alert.alert('Error', 'Please enter the verification code');
       return;
@@ -72,15 +74,41 @@ export default function PhoneAuth() {
         Alert.alert('Error', 'No confirmation result found');
         return;
       }
-      await confirmationResult.confirm(verificationCode);
-      console.log('Phone authentication successful, navigating to /tabs');
+      const userCredential = await confirmationResult.confirm(verificationCode);
+      console.log('Phone authentication successful!');
       Alert.alert('Phone authentication successful!');
-      router.replace('/tabs'); // Navigate to main app screen
+      setShouldNavigate(true);
+      console.log('setShouldNavigate(true) called');
     } catch (err: any) {
-      console.error('Error during confirmation:', err);
       Alert.alert('Error', err.message);
     }
   };
+
+  const [shouldNavigate, setShouldNavigate] = React.useState(false);
+
+  useEffect(() => {
+    console.log('Navigation useEffect triggered, shouldNavigate:', shouldNavigate);
+    if (shouldNavigate) {
+      let retries = 5;
+      const navigate = async () => {
+        console.log('navigate function called, retries left:', retries);
+        try {
+          navigation.navigate('Tabs' as never);
+          console.log('Navigation to Tabs completed');
+        } catch (error) {
+          console.error('Navigation error:', error);
+          Alert.alert('Navigation Error', 'Failed to navigate to Tabs.');
+          if (retries > 0) {
+            retries--;
+            setTimeout(navigate, 200);
+          } else {
+            Alert.alert('Navigation Error', 'Navigation not ready.');
+          }
+        }
+      };
+      navigate();
+    }
+  }, [shouldNavigate, navigation]);
 
   return (
     <>
@@ -113,7 +141,9 @@ export default function PhoneAuth() {
                 keyboardType="number-pad"
                 textContentType="oneTimeCode"
               />
-              <Button title="Confirm Code" onPress={confirmCode} />
+              <TouchableOpacity onPress={confirmCode} style={styles.button}>
+                <Text style={styles.buttonText}>Confirm Code</Text>
+              </TouchableOpacity>
             </>
           )}
         </View>
@@ -148,5 +178,19 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginBottom: 15,
     paddingHorizontal: 10,
+  },
+  button: {
+    backgroundColor: '#007bff',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

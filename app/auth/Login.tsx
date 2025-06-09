@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-
-type RootStackParamList = {
-  Login: undefined;
-  PhoneAuth: undefined;
-};
+import { useNavigation } from '@react-navigation/native';
 
 const Login = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation();
+  const isMounted = useRef(false);
+
+  React.useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -17,7 +20,12 @@ const Login = () => {
     >
       <View style={styles.form}>
         <Text style={styles.title}>Login</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('PhoneAuth')}>
+        <TouchableOpacity onPress={() => {
+          if (isMounted.current) {
+            console.log("Login: Button pressed, navigating to PhoneAuth");
+            navigation.navigate('PhoneAuth' as never);
+          }
+        }}>
           <Text style={styles.linkText}>Login with Phone Number</Text>
         </TouchableOpacity>
       </View>

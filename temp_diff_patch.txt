@@ -1,0 +1,5 @@
+import { View, Text, StyleSheet, Image, ActivityIndicator, Linking, TouchableOpacity, TextInput, Platform } from 'react-native';
+=======
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, ActivityIndicator, Linking, TouchableOpacity, TextInput, Platform, ScrollView, FlatList } from 'react-native';
+import { fetchNews, fetchWeather } from '../utils/apiService';

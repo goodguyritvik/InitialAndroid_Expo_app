@@ -25,8 +25,8 @@ const NOTE_STORAGE_KEY = 'plannerNotes';
 export default function Planner() {
     const navigation = useNavigation();
     const [currentMonth, setCurrentMonth] = useState(new Date());
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [notes, setNotes] = useState({});
+    const [selectedDate, setSelectedDate] = useState<number | null>(null);
+    const [notes, setNotes] = useState<Record<string, string>>({});
     const [showNoteModal, setShowNoteModal] = useState(false);
     const [noteText, setNoteText] = useState('');
     const [isEditing, setIsEditing] = useState(false);
@@ -59,30 +59,33 @@ export default function Planner() {
     };
 
     // Memoized month and year strings for performance
-    const { monthName, year, daysArray, firstDayOfMonth } = useMemo(() => {
-        const monthName = currentMonth.toLocaleString('default', { month: 'long' });
-        const year = currentMonth.getFullYear();
+const { monthName, year, daysArray, firstDayOfMonth } = useMemo(() => {
+    const monthName = currentMonth.toLocaleString('default', { month: 'long' });
+    const year = currentMonth.getFullYear();
 
-        // Get first day of month (0-6 where 0 is Sunday)
-        const firstDayOfMonth = new Date(
-            currentMonth.getFullYear(),
-            currentMonth.getMonth(),
-            1
-        ).getDay();
+    const rawFirstDay = new Date(
+        currentMonth.getFullYear(),
+        currentMonth.getMonth(),
+        1
+    ).getDay();
 
-        // Adjust to make Monday the first day (0 index)
-        const adjustedFirstDay = (firstDayOfMonth + 6) % 7;
+    const adjustedFirstDay = rawFirstDay === 0 ? 6 : rawFirstDay - 1;
 
-        const daysInMonth = new Date(
-            currentMonth.getFullYear(),
-            currentMonth.getMonth() + 1,
-            0
-        ).getDate();
+    const daysInMonth = new Date(
+        currentMonth.getFullYear(),
+        currentMonth.getMonth() + 1,
+        0
+    ).getDate();
 
-        const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+    const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-        return { monthName, year, daysArray, firstDayOfMonth: adjustedFirstDay };
-    }, [currentMonth]);
+    return {
+        monthName,
+        year,
+        daysArray,
+        firstDayOfMonth: adjustedFirstDay
+    };
+}, [currentMonth]);
 
     // Weekday headers
     const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -130,13 +133,13 @@ export default function Planner() {
     };
 
     // Check if a date has a note
-    const hasNote = (day) => {
+    const hasNote = (day: number) => {
         const dateKey = `${currentMonth.getMonth() + 1}-${day}-${currentMonth.getFullYear()}`;
         return notes[dateKey];
     };
 
     // Select a date to create or view a note
-    const handleDateClick = (day) => {
+    const handleDateClick = (day: number) => {
         setSelectedDate(day);
         const dateKey = `${currentMonth.getMonth() + 1}-${day}-${currentMonth.getFullYear()}`;
         setNoteText(notes[dateKey] || '');
@@ -206,7 +209,7 @@ export default function Planner() {
                 date: `${month}/${day}/${year}`,
                 text: String(note)
             };
-        }).sort((a, b) => new Date(b.id) - new Date(a.id)); // Sort by date descending
+        }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date descending
     }, [notes]);
 
     return (

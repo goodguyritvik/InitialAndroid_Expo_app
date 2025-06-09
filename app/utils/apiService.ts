@@ -38,4 +38,18 @@ export async function deleteUser(userId: string) {
 
 // Add similar functions for other collections as needed
 
+// News API function
+export async function fetchNews(apiKey: string) {
+  const NEWS_API_URL = 'https://newsapi.org/v2/top-headlines?country=in';
+  const response = await axios.get(`${NEWS_API_URL}&apiKey=${apiKey}`);
+  return response.data.articles;
+}
+
+// Weather API function
+export async function fetchWeather(lat: number, lon: number, apiKey: string) {
+  const WEATHER_API_URL = 'https://api.openweathermap.org/data/2.5/weather';
+  const response = await axios.get(`${WEATHER_API_URL}?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`);
+  return response.data;
+}
+
 export default null;

@@ -258,7 +258,7 @@ const RequestScreen = () => {
           title: 'Requests',
           headerStyle: { backgroundColor: 'white' },
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPress={() => router.back()}>
               <Entypo
                 name="chevron-left"
                 size={28}

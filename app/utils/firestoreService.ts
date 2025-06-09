@@ -1,3 +1,9 @@
+/**
+ * Firestore service utilities.
+ * This file should NOT be treated as a route.
+ * Ensure it exports only functions or constants, no React components.
+ */
+
 import { collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
 
